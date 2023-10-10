@@ -1,6 +1,7 @@
 package com.gustavomendonca.todolist.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,16 +19,19 @@ public class UserController {
      * @param userModel
      */
     @PostMapping("/")
-    public UserModel create(@RequestBody UserModel userModel) {
+    public ResponseEntity create(@RequestBody UserModel userModel) {
         var user =  this.userRepository.findByUsername(userModel.getUsername());
 
         if(user != null ) {
             System.out.println("Usuario ja existe!");
-            
-            return null;
+            /**
+             * mensagem de erro
+             * status code
+             */
+            return ResponseEntity.status(400).body("Usuario ja existe");
         }
         var userCreated = this.userRepository.save(userModel);
-        return userCreated;
+        return ResponseEntity.status(201).body(userCreated);
     }
 
 }
